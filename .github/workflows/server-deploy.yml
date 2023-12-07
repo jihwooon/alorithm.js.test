@@ -1,0 +1,44 @@
+name: alorithm.js.test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src 
+    steps:
+      - name: Checkouts
+        uses: actions/checkout@v3
+      
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12.0
+          cache: "npm"
+          cache-dependency-path: ./package-lock.json
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: server/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./package-lock.json') }}
+
+      - name: Installs
+        run: npm install
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Test
+        run: npm run test
+
