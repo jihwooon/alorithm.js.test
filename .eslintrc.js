@@ -30,5 +30,6 @@ module.exports = {
     'no-param-reassign': 'off',
     'consistent-return': 'off',
     'no-console': 'warn',
+    'no-multiple-empty-lines': ['error', { max: 2 }],
   },
 };
